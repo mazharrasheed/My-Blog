@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Fieldset, Layout, Submit,Field
+from crispy_forms.layout import Field, Fieldset, Layout, Submit
 from django import forms
 from django.contrib.auth import (authenticate, get_user_model,
                                  password_validation)
@@ -23,7 +23,7 @@ class Sign_Up(UserCreationForm):
         help_text=_("Enter the same password as before, for verification."),
     )
 
-    name=forms.CharField(max_length=55)
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -31,11 +31,12 @@ class Sign_Up(UserCreationForm):
         self.helper.layout = Layout(
             Fieldset(
                 'Sign Up',
-                'username',
-                'password1',
-                'password2',  
+        
             ),
             Field('username', css_class="mt-3"),
+            Field('password1', css_class="mt-3"),
+            Field('password2', css_class="mt-3"),
+            
             Submit('submit', 'Submit', css_class='button white mt-3'),
            
         )
