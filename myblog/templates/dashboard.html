@@ -1,5 +1,48 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
 {% block content %}
-    <h1>this is dashboard page</h1>
+
+
+<div class="container">
+  <h1 class="m-3">Welcome to My Blog Dashboard Page</h1>
+  {% if perms.home.add_blog %}
+    <div style="border-radius: 2rem;" class="container border col-5 m-5 p-4">
+      <form action="" method="POST">
+        {% csrf_token %}
+        {{form|crispy }}
+        <input class="btn btn-primary mt-3" type="submit" value="Post">
+      </form>
+    </div>
+    {% else %}
+    <h3 class="m-3">No add permision</h3>
+    {% endif %}
+
+    {% if perms.home.change_blog %}
+    <input class="btn btn-warning" class="btn btn " type="button" value="Edit">
+    {% else %}
+    <h3 class="m-3">No edit permision</h3>
+    {% endif%}
+
+
+    {% if perms.home.delete_blog %}
+    <input class="btn  btn-danger " type="button" value="Delete">
+    {% else %}
+    <h3 class="m-3">No delete permision</h3>
+    {% endif%}
+
+    <h3 class="m-3">view permision only</h3>
+ 
+  <div class="row justify-content-center">
+
+    {% for blog in myblog %}
+    <div class="col-3 border rounded-3 m-4 justify-content-center">
+
+      <h2>{{blog.title}}</h2>
+      <p>{{blog.desc}}</p>
+
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
 {% endblock content %}

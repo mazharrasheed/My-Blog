@@ -1,5 +1,24 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
 
 {% block content %}
-    <h1>this is signin page</h1>
+<h1>this is signin page</h1>
+
+<div class="container">
+
+<div style="border-radius: 2rem;" class="container border col-5 m-5 p-4">
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{form|crispy }}
+
+        <input class="btn btn-primary mt-3" type="submit" value="SignIn">
+    </form>
+    {% if messages %} {% for message in messages %}
+    <small {% if message.tags %} class="{{message.tags}} mt-3" {% endif %}>
+        {{message}}
+    </small>
+    {% endfor %} {% endif %}
+</div>
+</div>
 {% endblock content %}
