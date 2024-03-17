@@ -28,18 +28,17 @@
             <a class="nav-link {% if request.path == '/' %} active {%endif%}}" aria-current="page" href="/">Home</a>
           </li>
 
+
+          {% if request.user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link {% if request.path == '/dashboard/' %} active {%endif%}}"
               href="/dashboard/">Dashboard</a>
           </li>
-          {% if request.user.is_authenticated %}
-
           <li class="nav-item">
-            <a class="nav-link {% if request.path == '/dashboard/' %} active {%endif%}}"
-              href="/logout/">Logout</a>
+            <a class="nav-link {% if request.path == '/dashboard/' %} active {%endif%}}" href="/logout/">Logout</a>
           </li>
           {% else %}
-     
+
           <li class="nav-item">
             <a class="nav-link {% if request.path == '/signup/' %} active {%endif%}}" href="/signup/">SignUp</a>
           </li>

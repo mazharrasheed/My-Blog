@@ -10,9 +10,9 @@
         {% crispy form %}
   
     {% if messages %} {% for message in messages %}
-    <small {% if message.tags %} class="{{message.tags}} mt-3" {% endif %}>
+    <p {% if message.tags %} class="{{message.tags}} mt-3" {% endif %}>
       {{message}}
-    </small>
+    </p>
     {% endfor %} {% endif %}
 </div>
 </div>
