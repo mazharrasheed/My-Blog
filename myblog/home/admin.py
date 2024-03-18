@@ -8,5 +8,5 @@ from .models import Blog
 class BlogAdmin(admin.ModelAdmin):
     '''Admin View for Blog'''
 
-    list_display = ['id','title','desc']
+    list_display = ['id','title','description']
    

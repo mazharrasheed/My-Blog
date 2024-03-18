@@ -3,7 +3,9 @@ from crispy_forms.layout import Div, Field, Fieldset, Layout, Submit
 from django import forms
 from django.contrib.auth import (authenticate, get_user_model,
                                  password_validation)
-from django.contrib.auth.forms import UserCreationForm, UsernameField
+from django.contrib.auth.forms import (UserChangeForm, UserCreationForm,
+                                       UsernameField)
+from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 
 from .models import Blog
@@ -48,4 +50,20 @@ class Add_Blog(forms.ModelForm):
     
     class Meta:
         model = Blog
-        fields = '__all__'
+        fields = ('title','description')
+
+class EditUserPrifoleForm(UserChangeForm):
+    
+    password=None
+    class Meta:
+        model=User
+        fields=['username','first_name','last_name','email',]
+        labels={'email':'Email'}
+
+class AdminUserPrifoleForm(UserChangeForm):
+    
+    password=None
+    class Meta:
+        model=User
+        fields='__all__'
+        labels={'email':'Email'}

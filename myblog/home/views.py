@@ -2,11 +2,11 @@ from django.contrib import messages
 from django.contrib.auth import (authenticate, login, logout,
                                  update_session_auth_hash)
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 
-from .forms import Add_Blog, Sign_Up
+from .forms import Add_Blog, AdminUserPrifoleForm, EditUserPrifoleForm, Sign_Up
 from .models import Blog
 
 # Create your views here.
@@ -31,14 +31,17 @@ def edit_data(request,id):
         pst=Blog.objects.get(id=id)
         form=Add_Blog(request.POST,instance=pst)
         if form.is_valid():
-            form.save()
+          form.save()
+          messages.success(request,"Blog Updated succesfuly !!")
+          # return redirect('dashboard')
     else:
         pst=Blog.objects.get(id=id)
         form=Add_Blog(instance=pst)
     data={'form':form,'pst':pst}
     return render(request,'update.html',data)
-
+'''
 def delete_data(request,id):
+  print("dfsdfdsf")
   if request.user.is_authenticated:
     user=request.user
     perm=User.get_user_permissions(user)
@@ -46,9 +49,19 @@ def delete_data(request,id):
       if pm=="home.delete_blog":
         pst=Blog.objects.get(id=id)
         pst.delete()
-      else:
-        pass
     return redirect('dashboard')
+  else:
+    return redirect('signin')'''
+
+def delete_data(request,id):
+  if request.user.is_authenticated:
+    if request.method=='POST':
+      pst=Blog.objects.get(id=id)
+      pst.delete()
+      return redirect('dashboard')
+    else:
+      messages.success(request, "You are not authorized to delete")
+      return redirect('dashboard')
   else:
     return redirect('signin')
 
@@ -56,8 +69,13 @@ def post_blog(request):
   if request.user.is_authenticated:
     if request.method=='POST':
       form=Add_Blog(request.POST)
-      form.save()
-      return redirect('dashboard')
+      title=request.POST['title']
+      desc=request.POST['description']
+      loginuser=request.user
+      pst=Blog(title=title,description=desc,user=loginuser)
+      pst.save()
+      messages.success(request,"Blog posted succesfuly !!")
+      # return redirect('dashboard')
     else:
       form=Add_Blog()
     data={'form':form}
@@ -67,23 +85,34 @@ def post_blog(request):
 
 def dashboard(request):
   if request.user.is_authenticated:
-    myblog=Blog.objects.all()
-    data={'myblog':myblog}
+
+    if request.user.is_superuser==True:
+      myblog=Blog.objects.all()
+      data={'myblog':myblog}
+      pass
+    else:
+      user=request.user
+      myblog=Blog.objects.filter(user=user)
+      gps=user.groups.all()
+      data={'myblog':myblog,'groups':gps}
     return render(request,'dashboard.html',data)
   else:
     return redirect('signin')
 
-
 def sign_up(request):
   if request.method=="POST":
-    form=UserCreationForm(request.POST)
+    form=Sign_Up(request.POST)
     if form.is_valid():
       form.save()
+      user = form.save()
+      # adding user in to a group on Signup
+      group = Group.objects.get(name='author')
+      user.groups.add(group)
+      form = Sign_Up()
       messages.success(request,"account created succesfuly !!")
       return redirect('signup')
   else:
-    form=UserCreationForm()
-
+    form=Sign_Up()
   data={'form':form}
   return render(request,'signup.html',data)
 
@@ -107,7 +136,6 @@ def sign_in(request):
           return HttpResponseRedirect("/dashboard/")
     else:
       login_form = AuthenticationForm()
-    
     mydata = {'form': login_form}
     return render(request, "signin.html", mydata)
   else:
@@ -115,10 +143,25 @@ def sign_in(request):
 
 def editprofile(request,id):
   if request.user.is_authenticated:
-
-
-    mydata = {}
-    return render(request,"editprofile.html", mydata)
+    if request.method=="POST":
+      if request.user.is_superuser==True:
+        form=AdminUserPrifoleForm(request.POST,instance=request.user)
+        form.is_valid()
+        messages.success(request,"Your profile Update successfuly")
+        form.save()
+        return redirect('dashboard')
+      else:
+        form=EditUserPrifoleForm(request.POST,instance=request.user)
+        form.is_valid()
+        messages.success(request,"Your profile Update successfuly")
+        form.save()
+        return redirect('dashboard')
+    else: 
+      if request.user.is_superuser==True:
+        form=AdminUserPrifoleForm(instance=request.user)
+      else: 
+        form=EditUserPrifoleForm(instance=request.user)
+      data={'form':form}
+      return render(request,"editprofile.html",data)
   else:
-    return redirect('signin')
-  
+    return redirect("signin")
