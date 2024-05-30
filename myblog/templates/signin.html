@@ -3,16 +3,24 @@
 
 
 {% block content %}
-<h1>this is signin page</h1>
 
-<div class="container">
+
+<div class="container d-flex justify-content-center align-items-center ">
 
 <div style="border-radius: 2rem;" class="container border col-5 m-5 p-4">
     <form action="" method="POST">
         {% csrf_token %}
-        {{form|crispy }}
+        {{ form.non_field_errors }}
+    <div class="form-group{% if form.username.errors %} has-error{% endif %}"> 
+        {{ form.username|as_crispy_field }}
+    </div><br>
 
-        <input class="btn btn-primary mt-3" type="submit" value="SignIn">
+    <div class="form-group{% if form.password.errors %} has-error{% endif %}">
+        {{ form.password|as_crispy_field }}  
+    </div><br>
+        <!-- {{form|crispy }} -->
+
+        <input class="btn btn-info mt-3" type="submit" value="SignIn">
     </form>
     {% if messages %} {% for message in messages %}
     <small {% if message.tags %} class="{{message.tags}} mt-3" {% endif %}>

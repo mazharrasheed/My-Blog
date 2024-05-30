@@ -7,13 +7,12 @@ from django.contrib.auth.forms import (UserChangeForm, UserCreationForm,
                                        UsernameField)
 from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
-
 from .models import Blog
 
 
 class Sign_Up(UserCreationForm):
-
     username=UsernameField()
+    email = forms.EmailField(required=True)
     password1 = forms.CharField(
         label=_("Password"),
         strip=False,
@@ -29,31 +28,23 @@ class Sign_Up(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-
         self.helper = FormHelper()
         self.helper.form_method = 'POST'
         self.helper.form_action = ''
         self.helper.layout = Layout(
             Fieldset(
-                'Sign Up',
-             
+                'Sign Up',  
             ),
             Field('username','password1','password2', css_class="mb-3", css_id="custom_field_id",),
-     
-            
-            Submit('submit', 'Submit', css_class='btn btn-info mt-3'),
-           
+            Submit('submit', 'Submit', css_class='btn btn-info mt-3'),    
         )
 
 class Add_Blog(forms.ModelForm):
-    
     class Meta:
         model = Blog
         fields = ('title','description')
 
 class EditUserPrifoleForm(UserChangeForm):
-    
     password=None
     class Meta:
         model=User

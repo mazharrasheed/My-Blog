@@ -3,10 +3,10 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container d-flex justify-content-center align-items-center">
 
-    <div style="border-radius: 2rem;" class="container border col-5 m-5 p-4">
-       
+    <!-- <div style="border-radius: 2rem;" class="container border col-5 m-5 p-4">
+    
         {% crispy form %}
   
     {% if messages %} {% for message in messages %}
@@ -14,6 +14,28 @@
       {{message}}
     </p>
     {% endfor %} {% endif %}
+</div> -->
+
+<div  style="border-radius: 2rem;" class="container border col-5 m-5 p-4">
+  <h3>SignUp</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-group{% if form.username.errors %} has-error{% endif %}"> 
+        {{ form.username|as_crispy_field }}
+    </div><br>
+    <div class="form-group{% if form.email.errors %} has-error{% endif %}">
+        {{ form.email|as_crispy_field }}
+    </div><br>
+    <div class="form-group{% if form.password1.errors %} has-error{% endif %}">
+        <label for="{{ form.password1.id_for_label }}">Password:</label>
+        {{ form.password1 }}
+    </div><br>
+    <div class="form-group{% if form.password2.errors %} has-error{% endif %}">
+        {{ form.password2|as_crispy_field }}  
+    </div><br>
+    <button type="submit" class="btn btn-info">Sign Up</button>
+</form>
 </div>
 </div>
 
